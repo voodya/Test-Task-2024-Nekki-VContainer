@@ -47,6 +47,8 @@ public class ScenesManagerService : ISceneManager
                 continue;
             await Addressables.UnloadSceneAsync(_loadedScenes[item.Key].Item2);
         }
+
+        ValidateScenes();
     }
 
     public async UniTask ReleaseAllScenes()
@@ -55,8 +57,23 @@ public class ScenesManagerService : ISceneManager
         {
             if (item.Key == typeof(LoadingView))
                 continue;
-            _loadedScenes[item.Key].Item1.Hide(true);
+            //_loadedScenes[item.Key].Item1.Hide(true);
             await Addressables.UnloadSceneAsync(_loadedScenes[item.Key].Item2);
+        }
+        ValidateScenes();
+    }
+
+    private void ValidateScenes()
+    {
+        List<Type> types = new List<Type>();
+        foreach (var item in _loadedScenes)
+        {
+            if (item.Value.Item1 == null)
+                types.Add(item.Key);
+        }
+        foreach (var type in types)
+        {
+            _loadedScenes.Remove(type);
         }
     }
 
@@ -95,6 +112,8 @@ public class ScenesManagerService : ISceneManager
         }
         else
             Debug.LogError($"No instance scene {screenType}");
+
+        ValidateScenes();
 
     }
 }

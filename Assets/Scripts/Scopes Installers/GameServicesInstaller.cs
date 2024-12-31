@@ -18,6 +18,7 @@ public class GameServicesInstaller : ScriptableInstaller
     [SerializeField] private LayerMask _spellMask;
 
     private Dictionary<string, SpellView> _optimizetSpellViews;
+    private Dictionary<string, SpellConfig> _optimizetSpellConfigs;
 
     public override void Install(IContainerBuilder builder)
     {
@@ -26,6 +27,12 @@ public class GameServicesInstaller : ScriptableInstaller
         {
             _optimizetSpellViews[view.SpellViewName] = view;
         }
+        _optimizetSpellConfigs = new Dictionary<string, SpellConfig>();
+        foreach (var view in _spells)
+        {
+            _optimizetSpellConfigs[view.SpellName] = view;
+        }
+
 
         builder.RegisterFactory<EnemyConfig, EnemyPresenter>(
             x =>
@@ -73,6 +80,11 @@ public class GameServicesInstaller : ScriptableInstaller
             .As<IBootableAsync>()
             .WithParameter("spells", _spells)
             .WithParameter("spellPoolSize", _spellsPoolSize);
+
+        builder.Register<GameUiService>(Lifetime.Scoped)
+            .As<IGameUIService>()
+            .As<IBootableAsync>()
+            .WithParameter("configs", _optimizetSpellConfigs);
 
     }
 

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Thunder
   m_EditorClassIdentifier: 
   SpellName: Thunder
-  Damage: 3
+  Damage: 10
   Speed: 1000
   Range: 10
-  Distance: 1
-  CoolDown: 2
+  LiveTime: 2
+  CoolDown: 4
+  Icon: {fileID: 2800000, guid: 418d7dba68bcca345831e17e8894f93b, type: 3}

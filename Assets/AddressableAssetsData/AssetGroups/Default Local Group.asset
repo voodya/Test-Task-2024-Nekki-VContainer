@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 112d0cbcb12716f4395b3e0442323374
   m_SerializeEntries:
+  - m_GUID: 31be043d6eeba2b408d2599e834ee9b8
+    m_Address: Assets/Scenes/UI/GameUIScene.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bb8ae745085784d41ba9e75bfc8b57c4
     m_Address: Assets/Scenes/Game Core/CharacterConfigure.unity
     m_ReadOnly: 0

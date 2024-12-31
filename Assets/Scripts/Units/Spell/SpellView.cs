@@ -6,6 +6,7 @@ using UnityEngine;
 
 public interface ISpellView
 {
+    GameObject GameObject { get; }
     IObservable<Collision> OnCollided { get; }
     Rigidbody Rigidbody { get; }
     Collider Collider { get; }
@@ -28,6 +29,8 @@ public class SpellView : MonoBehaviour, ISpellView
     public string SpellViewName => _spellName;
     public IObservable<Collision> OnCollided => _collider.OnCollisionEnterAsObservable();
     public Rigidbody Rigidbody => _rigidbody;
+
+    public GameObject GameObject => gameObject;
 
     public void Hide()
     {

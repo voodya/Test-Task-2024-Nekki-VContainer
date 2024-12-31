@@ -3,7 +3,7 @@ using UniRx;
 using UnityEngine;
 using VContainer;
 
-public class CharacterPresenter
+public class CharacterPresenter : IDisposable
 {
     private ICharacterView _characterView;
     private CharacterModel _characterModel;
@@ -20,6 +20,8 @@ public class CharacterPresenter
 
     public Collider Collider => _characterView.Collider;
 
+    public IReactiveProperty<float> CharacterHP => _characterModel.HP;
+
     public CharacterPresenter(ICharacterView view, CharacterModel model, IObjectResolver objectResolver)
     {
         _characterView = view;
@@ -32,8 +34,17 @@ public class CharacterPresenter
         _characterView.Rb.transform.position = position;
         _characterView.Show();
         _disposables = new CompositeDisposable();
+        _characterView.OnCollided.Subscribe(TryGetDamage).AddTo(_disposables);
         _characterView.OnDamaget.Subscribe(GetDamage).AddTo(_disposables);
         _characterModel.HP.Subscribe(OnDamaged).AddTo(_disposables);
+    }
+
+    private void TryGetDamage(Collider collider)
+    {
+        if(collider.TryGetComponent(out IEnemyView enemyView))
+        {
+            enemyView.SetCharacter.OnNext(_characterView);
+        }
     }
 
     private void GetDamage(float obj)
@@ -48,7 +59,12 @@ public class CharacterPresenter
         {
             _characterView.SetDie();
             _onDied.OnNext(Unit.Default);
-            _disposables?.Dispose();
         }
+    }
+
+    public void Dispose()
+    {
+        MonoBehaviour.Destroy(_characterView.GameObject);
+        _disposables?.Dispose();
     }
 }

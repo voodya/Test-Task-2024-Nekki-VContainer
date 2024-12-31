@@ -10,4 +10,5 @@ public class SpellConfig : ScriptableObject
     [SerializeField] public float Range;
     [SerializeField] public float LiveTime;
     [SerializeField] public float CoolDown;
+    [SerializeField] public Texture2D Icon;
 }

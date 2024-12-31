@@ -9,6 +9,7 @@ public interface ISpellHolderService: IBootableAsync, IDisposable
 {
     IObservable<Dictionary<string, TimeSpan>> OnCooldownsUpdated { get; }
     IObservable<string> OnCurrentSpellChanget { get; }
+    string CurrentSpell { get; }
 
     void ReleaseSpell(SpellPresenter spellPresenter);
     void SetCoolDown(SpellPresenter spellPresenter);
@@ -34,8 +35,10 @@ public class SpellHolderService : ISpellHolderService
 
     private Subject<string> _onSpellChanget = new Subject<string>();
 
+
     private Subject<Dictionary<string, TimeSpan>> _onCoolDownsUpdated = new Subject<Dictionary<string, TimeSpan>>();
 
+    public string CurrentSpell => _currentSpell;
     public IObservable<Dictionary<string, TimeSpan>> OnCooldownsUpdated => _onCoolDownsUpdated;
 
     public IObservable<string> OnCurrentSpellChanget => _onSpellChanget;
@@ -101,7 +104,9 @@ public class SpellHolderService : ISpellHolderService
             Queue<SpellPresenter> spellsQueue = new Queue<SpellPresenter>();
             for (var i = 0; i < _maxSpellCount; i++)
             {
-                spellsQueue.Enqueue(_factory.Invoke(item));
+                var pres = _factory.Invoke(item);
+                _compositeDisposable.Add(pres);
+                spellsQueue.Enqueue(pres);
                 
             }
             _spellsCoolDowns[item.SpellName] = new TimeSpan();

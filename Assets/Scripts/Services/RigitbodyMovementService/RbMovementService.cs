@@ -44,7 +44,7 @@ public class RbMovementService : IRbMovementService
 
         _playerInputService.OnInputMove.Subscribe(vector => 
         {
-            Debug.LogError(vector);
+            //Debug.LogError(vector);
             _currentInputVelocity.x = vector.x;
             _currentInputVelocity.z = vector.y;
         }).AddTo(_disposables);
@@ -54,8 +54,12 @@ public class RbMovementService : IRbMovementService
             .Subscribe(_ =>
             {
                 _attachedRigidbody.linearVelocity = _currentInputVelocity * _characterService.Speed;
-                Quaternion toRotation = Quaternion.LookRotation(_currentInputVelocity, Vector3.up); //funny(instantly) rotate effect lol
-                _attachedRigidbody.rotation = toRotation;
+                if(_currentInputVelocity != Vector3.zero)
+                {
+                    Quaternion toRotation = Quaternion.LookRotation(_currentInputVelocity, Vector3.up); //funny(instantly) rotate effect lol
+                    _attachedRigidbody.rotation = toRotation;
+                }
+                
                 _currentInputVelocity = Vector3.zero;
             })
             .AddTo(_disposables);

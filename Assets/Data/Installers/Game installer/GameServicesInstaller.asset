@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyViews:
   - {fileID: 3286952858738354405, guid: 0d67c352c379c3f42899c381a2f9010f, type: 3}
-  - {fileID: 3286952858738354405, guid: 0d67c352c379c3f42899c381a2f9010f, type: 3}
+  - {fileID: 7524480847314334516, guid: 3ead52bbaf3d0ad4686e932ec1848856, type: 3}
   _obstacles:
   - {fileID: 3831576819949193837, guid: f14778ca512803a488fa918272a368e8, type: 3}
   - {fileID: 4378337803700585018, guid: f5bb3b340e095f849a1c23a23917bd3d, type: 3}

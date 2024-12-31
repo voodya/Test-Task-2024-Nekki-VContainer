@@ -2,7 +2,7 @@ using System;
 using Unity.AI.Navigation;
 using UnityEngine;
 
-public class GroundView : MonoBehaviour
+public class GroundView : MonoBehaviour, IDisposable
 {
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private NavMeshSurface _navMeshSurface;
@@ -48,5 +48,10 @@ public class GroundView : MonoBehaviour
         else
             x = Mathf.Abs(a) + Mathf.Abs(b);
         return x;
+    }
+
+    public void Dispose()
+    {
+        Destroy(this.gameObject);
     }
 }

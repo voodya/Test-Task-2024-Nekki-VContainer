@@ -48,7 +48,9 @@ public class EnemySpawnService : IEnemySpawnService
         _presenters = new Queue<EnemyPresenter>();
         for (int i = 0; i < _maxEnemyCount; i++)
         {
-            _presenters.Enqueue(_factory.Invoke(_config));
+            var pres = _factory.Invoke(_config);
+                _enemyPoolDisposable.Add(pres);
+            _presenters.Enqueue(pres);
             await UniTask.Yield();
         }
     }
@@ -78,6 +80,10 @@ public class EnemySpawnService : IEnemySpawnService
         if (_presenters.TryDequeue(out EnemyPresenter presenter))
         {
             presenter.Spawn(GetOutRectPosition());
+        }
+        else
+        {
+            Debug.LogError("Queue empty");
         }
     }
 

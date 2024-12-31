@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using UniRx;
 using VContainer;
 
 public interface IGameLoopService : IBootableAsync, IDisposable
@@ -15,6 +16,9 @@ public class GameLoopService : IGameLoopService
     private IRuntimeCharacterService _runtimeCharacterService;
     private IRbMovementService _rbMovementService;
     private ISpellHolderService _spellHolderService;
+    private IGameUIService _gameUIService;
+    private CompositeDisposable _compositeDisposable;
+    private IApplicationScopesService _applicationScopesService;
 
     [Inject]
     public GameLoopService(
@@ -22,7 +26,9 @@ public class GameLoopService : IGameLoopService
         IMapGeneratorService mapGeneratorService,
         IRuntimeCharacterService runtimeCharacterService,
         IRbMovementService rbMovementService,
-        ISpellHolderService spellHolderService)
+        ISpellHolderService spellHolderService,
+        IGameUIService gameUIService,
+        IApplicationScopesService applicationScopesService)
     {
         _enemySpawnService = enemySpawnService;
         _mapGeneratorService = mapGeneratorService;
@@ -30,6 +36,8 @@ public class GameLoopService : IGameLoopService
         Priority = 1000;
         _rbMovementService = rbMovementService;
         _spellHolderService = spellHolderService;
+        _gameUIService = gameUIService;
+        _applicationScopesService = applicationScopesService;
     }
 
 
@@ -38,6 +46,7 @@ public class GameLoopService : IGameLoopService
 
     public UniTask Boot()
     {
+        _compositeDisposable = new CompositeDisposable();   
         return UniTask.CompletedTask;   
     }
 
@@ -47,11 +56,18 @@ public class GameLoopService : IGameLoopService
         _enemySpawnService.StartEnemySpawn();
         _rbMovementService.StartInputHandle();
         _spellHolderService.StartSpellHolder();
+        _gameUIService.StartGameUI();
+        _runtimeCharacterService.OnCharacterDied.Subscribe(OnDied).AddTo(_compositeDisposable);
+    }
+
+    private void OnDied(Unit unit)
+    {
+        _applicationScopesService.TryChangeScope(LocalScope.Menu);
     }
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        _compositeDisposable?.Dispose();
     }
 
 

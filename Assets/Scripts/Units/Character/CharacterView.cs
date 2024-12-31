@@ -10,6 +10,7 @@ public interface ICharacterView : IUnit
     Rigidbody Rb { get; }
     Vector3 AttackPose { get; }
     Collider Collider { get; }
+    Subject<float> SetDamage { get; }
 }
 
 
@@ -21,17 +22,23 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private Transform _attackTransform;
 
+   
+
     public Collider Collider => _collider;
 
     public Rigidbody Rb => _rb;
 
-    public Subject<float> _onDamaget = new Subject<float>();
+    private Subject<float> _onDamaget = new Subject<float>();
+
+    public Subject<float> SetDamage => _onDamaget;
 
     public IObservable<Collider> OnCollided => _trigger.OnTriggerEnterAsObservable();
 
     public IObservable<float> OnDamaget => _onDamaget;
 
     public Vector3 AttackPose => _attackTransform.position;
+
+    public GameObject GameObject => gameObject;
 
     public void Hide()
     {

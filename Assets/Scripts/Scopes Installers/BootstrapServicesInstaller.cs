@@ -10,6 +10,7 @@ public class BootstrapServicesInstaller : ScriptableInstaller
     [SerializeField] private AssetReference _loadViewScene;
     [SerializeField] private AssetReference _menuScene;
     [SerializeField] private AssetReference _configurePlayerScene;
+    [SerializeField] private AssetReference _gameUiScene;
     [SerializeField] private List<ScopeInstallersList> _rawInstallers;
     public override void Install(IContainerBuilder builder)
     {
@@ -47,6 +48,7 @@ public class BootstrapServicesInstaller : ScriptableInstaller
         scenesManagerService.RegisterScene<LoadingView>(_loadViewScene);
         scenesManagerService.RegisterScene<MainMenuView>(_menuScene);
         scenesManagerService.RegisterScene<ConfigurePlayerView>(_configurePlayerScene);
+        scenesManagerService.RegisterScene<GameUIView>(_gameUiScene);
 
         builder.RegisterInstance(scenesManagerService).As<ISceneManager>();
     }

@@ -3,7 +3,7 @@ using UniRx;
 using UnityEngine;
 using VContainer;
 
-public class SpellPresenter
+public class SpellPresenter: IDisposable
 {
     private ISpellView _view;
     private SpellModel _model;
@@ -63,5 +63,11 @@ public class SpellPresenter
         _view.Land();
         _disposable?.Dispose();
         _service.ReleaseSpell(this);
+    }
+
+    public void Dispose()
+    {
+        MonoBehaviour.Destroy(_view.GameObject);
+        _disposable?.Dispose();
     }
 }

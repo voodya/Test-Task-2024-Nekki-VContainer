@@ -30,6 +30,12 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  _gameUiScene:
+    m_AssetGUID: 31be043d6eeba2b408d2599e834ee9b8
+    m_SubObjectName: 
+    m_SubObjectGUID: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _rawInstallers:
   - Scope: 1
     Installers:

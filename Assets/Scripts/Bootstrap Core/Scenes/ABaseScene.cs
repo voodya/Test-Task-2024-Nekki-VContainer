@@ -13,6 +13,7 @@ public abstract class ABaseScene : MonoBehaviour, IDisposable
     {
         if(force)
         {
+
             _canvasGroup.alpha = 0;
             await UniTask.CompletedTask;   
         }

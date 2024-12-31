@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Fierball
   m_EditorClassIdentifier: 
   SpellName: FireBall
-  Damage: 10
-  Speed: 150
+  Damage: 15
+  Speed: 500
   Range: 2
-  Distance: 10
-  CoolDown: 3
+  LiveTime: 3
+  CoolDown: 5
+  Icon: {fileID: 2800000, guid: af79026083d286046a776bc04819bb48, type: 3}

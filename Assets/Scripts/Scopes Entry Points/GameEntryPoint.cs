@@ -21,7 +21,6 @@ public class GameEntryPoint : ABaseEntryPoint
     {
         await base.StartAsync(cancellation);
         _loadingPanelService.Hide();
-        await UniTask.Delay(3000);
         _gameLoopService.StartGameLoop();
     }
 

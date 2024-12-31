@@ -9,6 +9,8 @@ public interface IRuntimeCharacterService : IBootableAsync, IDisposable
     Transform CharacterTransform { get; }
     Rigidbody CharacterRb { get; }
     float Speed { get; }
+    IReactiveProperty<float> CharacterHP { get; }
+    IObservable<Unit> OnCharacterDied { get; }
 
     void StartPlayingFromPoint(Vector3 point);
 }
@@ -27,6 +29,8 @@ public class RuntimeCharacterService : IRuntimeCharacterService
     public Transform CharacterTransform => _currentCharacter.CharacterTransform;
     public Rigidbody CharacterRb => _currentCharacter.Rigidbody;
     public float Speed => _currentCharacter.Speed;
+
+    public IReactiveProperty<float> CharacterHP => _currentCharacter.CharacterHP;
 
     [Inject]
     public RuntimeCharacterService(
@@ -84,6 +88,7 @@ public class RuntimeCharacterService : IRuntimeCharacterService
 
     public void Dispose()
     {
+        _currentCharacter.Dispose();
         _disposable?.Dispose();
     }
 }
