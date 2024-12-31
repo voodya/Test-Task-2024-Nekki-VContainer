@@ -8,13 +8,25 @@ public class GameServicesInstaller : ScriptableInstaller
 {
     [SerializeField] private List<EnemyView> _enemyViews;
     [SerializeField] private List<GameObject> _obstacles;
+    [SerializeField] private List<SpellView> _spellViews;
     [SerializeField] private GroundView _groundView;
     [SerializeField] private EnemyConfig _enemyConfig;
     [SerializeField] private CharacterView _characterView;
     [SerializeField] private int _enemyCount;
+    [SerializeField] private int _spellsPoolSize;
+    [SerializeField] private List<SpellConfig> _spells;
+    [SerializeField] private LayerMask _spellMask;
+
+    private Dictionary<string, SpellView> _optimizetSpellViews;
 
     public override void Install(IContainerBuilder builder)
     {
+        _optimizetSpellViews = new Dictionary<string, SpellView>();
+        foreach (var view in _spellViews)
+        {
+            _optimizetSpellViews[view.SpellViewName] = view;
+        }
+
         builder.RegisterFactory<EnemyConfig, EnemyPresenter>(
             x =>
             config => new EnemyPresenter(Instantiate(GetRandomView()), new EnemyModel(config), x)
@@ -22,6 +34,10 @@ public class GameServicesInstaller : ScriptableInstaller
         builder.RegisterFactory<CharacterSaveData, CharacterPresenter>(
             x =>
             save => new CharacterPresenter(Instantiate(_characterView), new CharacterModel(save), x)
+            , Lifetime.Scoped);
+        builder.RegisterFactory<SpellConfig, SpellPresenter>(
+            x =>
+            spellConfig => new SpellPresenter(Instantiate(_optimizetSpellViews[spellConfig.SpellName]), new SpellModel(spellConfig), x, _spellMask)
             , Lifetime.Scoped);
 
         builder.Register<MapGeneratorService>(Lifetime.Scoped)
@@ -51,6 +67,13 @@ public class GameServicesInstaller : ScriptableInstaller
         builder.Register<PlayerInputService>(Lifetime.Scoped)
             .As<IPlayerInputService>()
             .As<IBootableAsync>();
+
+        builder.Register<SpellHolderService>(Lifetime.Scoped)
+            .As<ISpellHolderService>()
+            .As<IBootableAsync>()
+            .WithParameter("spells", _spells)
+            .WithParameter("spellPoolSize", _spellsPoolSize);
+
     }
 
     private EnemyView GetRandomView()

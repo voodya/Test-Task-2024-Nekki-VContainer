@@ -16,6 +16,10 @@ public class CharacterPresenter
     public Rigidbody Rigidbody => _characterView.Rb;
     public IObservable<Unit> OnDied => _onDied;
 
+    public Vector3 AttackPose => _characterView.AttackPose;
+
+    public Collider Collider => _characterView.Collider;
+
     public CharacterPresenter(ICharacterView view, CharacterModel model, IObjectResolver objectResolver)
     {
         _characterView = view;

@@ -1752,6 +1752,8 @@ MonoBehaviour:
   _sliderHP: {fileID: 749380758}
   _sliderProtection: {fileID: 1862561997}
   _closeBtn: {fileID: 1900551253}
+  _hpValueText: {fileID: 631546965}
+  _protectopnValueText: {fileID: 663921064}
 --- !u!114 &1942563491
 MonoBehaviour:
   m_ObjectHideFlags: 0

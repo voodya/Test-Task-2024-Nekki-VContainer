@@ -44,9 +44,9 @@ public class RbMovementService : IRbMovementService
 
         _playerInputService.OnInputMove.Subscribe(vector => 
         {
+            Debug.LogError(vector);
             _currentInputVelocity.x = vector.x;
             _currentInputVelocity.z = vector.y;
-
         }).AddTo(_disposables);
 
         Observable

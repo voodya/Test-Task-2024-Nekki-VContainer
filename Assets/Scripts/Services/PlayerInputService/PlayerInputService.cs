@@ -21,6 +21,9 @@ public class PlayerInputService : IPlayerInputService
     private Subject<Unit> _onAttack = new Subject<Unit>();
     private Subject<Unit> _onNext = new Subject<Unit>();
     private Subject<Unit> _onPrevious = new Subject<Unit>();
+    private CompositeDisposable _disposable;
+    private Vector2 _moveActionData;
+    private InputAction _moveAction;
 
     [Inject]
     public PlayerInputService()
@@ -40,8 +43,24 @@ public class PlayerInputService : IPlayerInputService
     {
         if (IsBooted) return;
         IsBooted = true;
+        _disposable = new CompositeDisposable(); 
 
-        InputSystem.actions.FindAction("Move").performed += OnMove;
+        _moveAction = InputSystem.actions.FindAction("Move");
+
+        if(_moveAction != null)
+        {
+            Observable
+                .EveryUpdate()
+                .Subscribe(_ => OnMove(_moveAction))
+                .AddTo(_disposable);
+            _moveAction.performed += SetMove;
+            _moveAction.canceled += SetStay;
+        }
+
+        
+
+
+
         InputSystem.actions.FindAction("Attack").performed += OnAttack;
         InputSystem.actions.FindAction("Next").performed += OnNext;
         InputSystem.actions.FindAction("Previous").performed += OnPrevious;
@@ -49,12 +68,24 @@ public class PlayerInputService : IPlayerInputService
         await UniTask.Yield();
     }
 
+    private void SetStay(InputAction.CallbackContext context)
+    {
+        _moveActionData = Vector2.zero;
+    }
+
+    private void SetMove(InputAction.CallbackContext context)
+    {
+        _moveActionData = context.ReadValue<Vector2>();
+    }
+
     public void Dispose()
     {
-        InputSystem.actions.FindAction("Move").performed -= OnMove;
+        _moveAction.performed -= SetMove;
+        _moveAction.canceled -= SetStay;
         InputSystem.actions.FindAction("Attack").performed -= OnAttack;
         InputSystem.actions.FindAction("Next").performed -= OnNext;
         InputSystem.actions.FindAction("Previous").performed -= OnPrevious;
+        _disposable?.Dispose();
     }
 
     private void OnAttack(InputAction.CallbackContext context)
@@ -62,9 +93,10 @@ public class PlayerInputService : IPlayerInputService
         _onAttack.OnNext(Unit.Default);
     }
 
-    private void OnMove(InputAction.CallbackContext context)
+    private void OnMove(InputAction context)
     {
-        _onMove.OnNext(context.ReadValue<Vector2>());
+        if(context.IsPressed())
+        _onMove.OnNext(_moveActionData);
     }
 
     private void OnNext(InputAction.CallbackContext context)

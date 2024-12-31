@@ -21,6 +21,8 @@ public class RuntimeCharacterService : IRuntimeCharacterService
     private CharacterSaveData _saveData;
     private CharacterPresenter _currentCharacter;
     private CompositeDisposable _disposable;
+    private ISpellHolderService _spellHolderService;
+    private IPlayerInputService _playerInputService;
 
     public Transform CharacterTransform => _currentCharacter.CharacterTransform;
     public Rigidbody CharacterRb => _currentCharacter.Rigidbody;
@@ -29,11 +31,15 @@ public class RuntimeCharacterService : IRuntimeCharacterService
     [Inject]
     public RuntimeCharacterService(
         Func<CharacterSaveData, CharacterPresenter> func,
-        ISaveService saveService)
+        ISaveService saveService,
+        ISpellHolderService spellHolderService,
+        IPlayerInputService playerInputService)
     {
         _factory = func;
         _saveService = saveService;
         Priority = 10;
+        _spellHolderService = spellHolderService;
+        _playerInputService = playerInputService;
     }
 
     public bool IsBooted { get; set; }
@@ -63,6 +69,12 @@ public class RuntimeCharacterService : IRuntimeCharacterService
     public void StartPlayingFromPoint(Vector3 point)
     {
         _currentCharacter.Spawn(point);
+        _spellHolderService.SetIgnoreCollision(_currentCharacter.Collider);
+        _playerInputService.OnInputAttack.Subscribe(_ => 
+        {
+            _spellHolderService.ThrowSpell(_currentCharacter.AttackPose, _currentCharacter.Rigidbody.transform.forward);
+        
+        }).AddTo(_disposable);
     }
 
     private void OnDied(Unit unit)

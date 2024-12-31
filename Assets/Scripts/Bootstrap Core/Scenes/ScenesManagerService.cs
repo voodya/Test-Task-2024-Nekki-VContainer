@@ -68,14 +68,10 @@ public class ScenesManagerService : ISceneManager
         Type screenType = typeof(T);
         if (_loadedScenes.ContainsKey(screenType))
         {
-            Debug.LogError($"Return exist scene instance {screenType}");
-           
             return _loadedScenes[screenType].Item1 as T;
-           
         }
         else
         {
-            Debug.LogError($"No scene instance, create new {screenType}");
             AsyncOperationHandle<SceneInstance> loadingOperation = Addressables.LoadSceneAsync(_registredScenes[screenType], LoadSceneMode.Additive);
 
             T scene = (await loadingOperation).Scene.GetRoot<T>();
@@ -83,9 +79,6 @@ public class ScenesManagerService : ISceneManager
             await scene.Show();
             return scene;
         }
-        
-
-        
     }
 
     public async UniTask ReleaseScene<T>()

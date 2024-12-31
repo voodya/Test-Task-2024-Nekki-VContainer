@@ -19,6 +19,7 @@ public interface IUnit
 public interface IEnemyView : IUnit
 {
     NavMeshAgent Agent { get; }
+    Subject<float> SetDamage { get; }
 }
 
 public class EnemyView : MonoBehaviour, IEnemyView
@@ -28,7 +29,9 @@ public class EnemyView : MonoBehaviour, IEnemyView
 
     public NavMeshAgent Agent => _agent;
 
-    public Subject<float> _onDamaget = new Subject<float>();
+    private Subject<float> _onDamaget = new Subject<float>();
+
+    public Subject<float> SetDamage => _onDamaget;
     public IObservable<float> OnDamaget => _onDamaget;
 
     public void Hide()
