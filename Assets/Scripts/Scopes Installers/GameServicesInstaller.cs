@@ -43,6 +43,14 @@ public class GameServicesInstaller : ScriptableInstaller
         builder.Register<GameLoopService>(Lifetime.Scoped)
             .As<IGameLoopService>()
             .As<IBootableAsync>();
+        
+        builder.Register<RbMovementService>(Lifetime.Scoped)
+            .As<IRbMovementService>()
+            .As<IBootableAsync>();
+
+        builder.Register<PlayerInputService>(Lifetime.Scoped)
+            .As<IPlayerInputService>()
+            .As<IBootableAsync>();
     }
 
     private EnemyView GetRandomView()

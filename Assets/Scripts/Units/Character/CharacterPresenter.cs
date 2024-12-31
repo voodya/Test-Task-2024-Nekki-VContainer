@@ -12,6 +12,8 @@ public class CharacterPresenter
     private Subject<Unit> _onDied = new();
 
     public Transform CharacterTransform => _characterView.Rb.transform;
+    public float Speed => _characterModel.Speed;
+    public Rigidbody Rigidbody => _characterView.Rb;
     public IObservable<Unit> OnDied => _onDied;
 
     public CharacterPresenter(ICharacterView view, CharacterModel model, IObjectResolver objectResolver)

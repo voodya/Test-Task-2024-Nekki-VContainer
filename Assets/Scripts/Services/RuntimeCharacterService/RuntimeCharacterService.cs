@@ -7,6 +7,8 @@ using VContainer;
 public interface IRuntimeCharacterService : IBootableAsync, IDisposable
 {
     Transform CharacterTransform { get; }
+    Rigidbody CharacterRb { get; }
+    float Speed { get; }
 
     void StartPlayingFromPoint(Vector3 point);
 }
@@ -21,6 +23,8 @@ public class RuntimeCharacterService : IRuntimeCharacterService
     private CompositeDisposable _disposable;
 
     public Transform CharacterTransform => _currentCharacter.CharacterTransform;
+    public Rigidbody CharacterRb => _currentCharacter.Rigidbody;
+    public float Speed => _currentCharacter.Speed;
 
     [Inject]
     public RuntimeCharacterService(
