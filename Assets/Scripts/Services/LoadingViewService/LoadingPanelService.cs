@@ -5,6 +5,8 @@ using VContainer;
 public interface ILoadingPanelService : IBootableAsync
 {
     void Hide();
+    void PrintMessage(string message);
+    void Release();
     void Show();
 }
 
@@ -25,11 +27,16 @@ public class LoadingPanelService : ILoadingPanelService
         _sceneManager = sceneManager;
     }
 
+    public void PrintMessage(string message)
+    {
+        _view.MessageText.text = message;
+    }
+
     public async UniTask Boot()
     {
         if(IsBooted) return;
-        _view = await _sceneManager.LoadScene<LoadingView>();
-        IsBooted = true;    
+        _view = await _sceneManager.GetScene<LoadingView>();
+        IsBooted = true;
     }
 
     public void Show()
@@ -44,5 +51,10 @@ public class LoadingPanelService : ILoadingPanelService
         _view.CanvasGroup.DOFade(0f, 0.5f);
         _view.CanvasGroup.interactable = false;
         _view.CanvasGroup.blocksRaycasts = false;
+    }
+
+    public void Release()
+    {
+        _sceneManager.ReleaseScene<LoadingView>();
     }
 }

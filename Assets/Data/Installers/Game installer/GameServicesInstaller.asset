@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15862267c5f79fe40965cda2a9e2ce12, type: 3}
+  m_Name: GameServicesInstaller
+  m_EditorClassIdentifier: 
+  _enemyViews:
+  - {fileID: 3286952858738354405, guid: 0d67c352c379c3f42899c381a2f9010f, type: 3}
+  - {fileID: 3286952858738354405, guid: 0d67c352c379c3f42899c381a2f9010f, type: 3}
+  _obstacles:
+  - {fileID: 3831576819949193837, guid: f14778ca512803a488fa918272a368e8, type: 3}
+  - {fileID: 4378337803700585018, guid: f5bb3b340e095f849a1c23a23917bd3d, type: 3}
+  - {fileID: 7309849686253908604, guid: a9d03e22589ae4c449965d56d01bf46c, type: 3}
+  _groundView: {fileID: 842157766685083832, guid: 6c880cf2c80b1dc40afaee095f1e3aff, type: 3}
+  _enemyConfig: {fileID: 11400000, guid: 763c232857b751d4b86e83185cd0c7bc, type: 2}
+  _characterView: {fileID: 3656580108186799370, guid: 6ab7f90ec37928e47a5fe02d8d85011d, type: 3}
+  _enemyCount: 10

@@ -5,7 +5,7 @@ using VContainer.Unity;
 
 public class SceneInstaller : LifetimeScope
 {
-    [SerializeField] private List<ScriptableInstaller> _installers;
+    [SerializeField] public List<ScriptableInstaller> _installers;
 
     protected override void Configure(IContainerBuilder builder)
     {

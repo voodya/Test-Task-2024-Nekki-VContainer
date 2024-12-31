@@ -9,8 +9,10 @@ using UnityEngine.SceneManagement;
 
 public interface ISceneManager
 {
-    UniTask<T> LoadScene<T>() where T : ABaseScene;
+    UniTask<T> GetScene<T>() where T : ABaseScene;
     void RegisterScene<T>(AssetReference assetReference) where T : ABaseScene;
+    UniTask ReleaseAllScenes();
+    UniTask ReleaseScene<T>() where T : ABaseScene;
 }
 
 
@@ -31,18 +33,75 @@ public class ScenesManagerService : ISceneManager
         Type type = typeof(T);
         if (!_registredScenes.ContainsKey(type))
             _registredScenes.Add(type, assetReference);
+        else
+        {
+            Debug.LogError($"{type} already registred");
+        }
+    }
+
+    public async UniTask ReleaseAllScenes(List<Type> notReleasedScenes)
+    {
+        foreach (var item in _loadedScenes)
+        {
+            if (notReleasedScenes.Contains(item.Key))
+                continue;
+            await Addressables.UnloadSceneAsync(_loadedScenes[item.Key].Item2);
+        }
+    }
+
+    public async UniTask ReleaseAllScenes()
+    {
+        foreach (var item in _loadedScenes)
+        {
+            if (item.Key == typeof(LoadingView))
+                continue;
+            _loadedScenes[item.Key].Item1.Hide(true);
+            await Addressables.UnloadSceneAsync(_loadedScenes[item.Key].Item2);
+        }
     }
 
 
-    public async UniTask<T> LoadScene<T>()
+    public async UniTask<T> GetScene<T>()
+        where T : ABaseScene
+    {
+
+        Type screenType = typeof(T);
+        if (_loadedScenes.ContainsKey(screenType))
+        {
+            Debug.LogError($"Return exist scene instance {screenType}");
+           
+            return _loadedScenes[screenType].Item1 as T;
+           
+        }
+        else
+        {
+            Debug.LogError($"No scene instance, create new {screenType}");
+            AsyncOperationHandle<SceneInstance> loadingOperation = Addressables.LoadSceneAsync(_registredScenes[screenType], LoadSceneMode.Additive);
+
+            T scene = (await loadingOperation).Scene.GetRoot<T>();
+            _loadedScenes[screenType] = (scene, loadingOperation);
+            await scene.Show();
+            return scene;
+        }
+        
+
+        
+    }
+
+    public async UniTask ReleaseScene<T>()
         where T : ABaseScene
     {
         Type screenType = typeof(T);
 
-        AsyncOperationHandle<SceneInstance> loadingOperation = Addressables.LoadSceneAsync(_registredScenes[screenType], LoadSceneMode.Additive);
+        if (_loadedScenes.ContainsKey(screenType))
+        {
+            await _loadedScenes[screenType].Item1.Hide();
+            _loadedScenes[screenType].Item1.Dispose();
+            await Addressables.UnloadSceneAsync(_loadedScenes[screenType].Item2);
+            _loadedScenes.Remove(screenType);
+        }
+        else
+            Debug.LogError($"No instance scene {screenType}");
 
-        T scene = (await loadingOperation).Scene.GetRoot<T>();
-        _loadedScenes[screenType] = (scene, loadingOperation);
-        return scene;
     }
 }

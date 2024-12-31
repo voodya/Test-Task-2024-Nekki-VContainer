@@ -15,6 +15,16 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 112d0cbcb12716f4395b3e0442323374
   m_SerializeEntries:
+  - m_GUID: bb8ae745085784d41ba9e75bfc8b57c4
+    m_Address: Assets/Scenes/Game Core/CharacterConfigure.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4d2ca5f5140a1a4f8e4bd54f3908e46
+    m_Address: Assets/Scenes/Game Core/Menu.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e68d60297add35442915b9276a1d57d3
     m_Address: Assets/Scenes/LoadingScene.unity
     m_ReadOnly: 0
