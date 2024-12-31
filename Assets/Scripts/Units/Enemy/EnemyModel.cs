@@ -6,11 +6,14 @@ public class EnemyModel
     private float _protection;
     private int _damage;
     private float _attackDelay;
+    private float _speed;
 
     public IReactiveProperty<float> Hp => _hp;
     public int Damage => _damage;
     public float Protection => _protection;
     public float AttackDelay => _attackDelay;
+
+    public float Speed => _speed;
 
     public EnemyModel(EnemyConfig config)
     {
@@ -18,6 +21,7 @@ public class EnemyModel
         _damage = config.Damage;
         _protection = config.Protection;
         _attackDelay = config.AttackDelay;
+        _speed = config.Speed;  
     }
 
 

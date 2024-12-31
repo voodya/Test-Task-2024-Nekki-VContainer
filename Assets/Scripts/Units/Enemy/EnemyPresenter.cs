@@ -19,6 +19,7 @@ public class EnemyPresenter : IDisposable
         _attackTime = DateTime.Now;
         _view = view;
         _model = model;
+        _view.Agent.speed = model.Speed;
         _spawnService = objectResolver.Resolve<IEnemySpawnService>();
         _runtimeCharacterService = objectResolver.Resolve<IRuntimeCharacterService>();
         _view.Hide();

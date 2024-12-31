@@ -14,7 +14,7 @@ public interface IEnemySpawnService : IBootableAsync, IDisposable
 
 public class EnemySpawnService : IEnemySpawnService
 {
-    private readonly Func<EnemyConfig, EnemyPresenter> _factory;
+    private readonly Func<EnemyPresenter> _factory;
     private Queue<EnemyPresenter> _presenters;
     private IMapGeneratorService _mapGeneratorService;
     private ICameraService _cameraService;
@@ -26,13 +26,11 @@ public class EnemySpawnService : IEnemySpawnService
 
     [Inject]
     public EnemySpawnService(
-        Func<EnemyConfig, EnemyPresenter> func,
-        EnemyConfig enemyConfig,
+        Func<EnemyPresenter> func,
         int enemyCount,
         IMapGeneratorService mapGeneratorService,
         ICameraService cameraService)
     {
-        _config = enemyConfig;
         _factory = func;
         Priority = 1;
         _maxEnemyCount = enemyCount;
@@ -51,7 +49,7 @@ public class EnemySpawnService : IEnemySpawnService
         _presenters = new Queue<EnemyPresenter>();
         for (int i = 0; i < _maxEnemyCount; i++)
         {
-            var pres = _factory.Invoke(_config);
+            var pres = _factory.Invoke();
                 _enemyPoolDisposable.Add(pres);
             _presenters.Enqueue(pres);
             await UniTask.Yield();
@@ -60,7 +58,6 @@ public class EnemySpawnService : IEnemySpawnService
 
     public void Dispose()
     {
-        Debug.LogError("Dispose EnemySpawnService");
         _enemyPoolDisposable?.Dispose();
     }
 

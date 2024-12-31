@@ -10,15 +10,17 @@ public class GameServicesInstaller : ScriptableInstaller
     [SerializeField] private List<GameObject> _obstacles;
     [SerializeField] private List<SpellView> _spellViews;
     [SerializeField] private GroundView _groundView;
-    [SerializeField] private EnemyConfig _enemyConfig;
     [SerializeField] private CharacterView _characterView;
     [SerializeField] private int _enemyCount;
     [SerializeField] private int _spellsPoolSize;
     [SerializeField] private List<SpellConfig> _spells;
     [SerializeField] private LayerMask _spellMask;
+    [SerializeField] private List<EnemyComposeData> _enemyComposeDatas;
 
     private Dictionary<string, SpellView> _optimizetSpellViews;
     private Dictionary<string, SpellConfig> _optimizetSpellConfigs;
+
+
 
     public override void Install(IContainerBuilder builder)
     {
@@ -33,11 +35,15 @@ public class GameServicesInstaller : ScriptableInstaller
             _optimizetSpellConfigs[view.SpellName] = view;
         }
 
+        EnemyPresenter getEnemyPresenter(IObjectResolver objectResolver)
+        {
+            var random = GetRandomView();
+            return new EnemyPresenter(Instantiate(random.EnemyView), new EnemyModel(random.EnemyConfig), objectResolver);
+        }
 
-        builder.RegisterFactory<EnemyConfig, EnemyPresenter>(
-            x =>
-            config => new EnemyPresenter(Instantiate(GetRandomView()), new EnemyModel(config), x)
-            , Lifetime.Scoped);
+
+        builder.RegisterFactory<EnemyPresenter>(x => () =>  getEnemyPresenter(x), Lifetime.Scoped);
+
         builder.RegisterFactory<CharacterSaveData, CharacterPresenter>(
             x =>
             save => new CharacterPresenter(Instantiate(_characterView), new CharacterModel(save), x)
@@ -56,7 +62,6 @@ public class GameServicesInstaller : ScriptableInstaller
         builder.Register<EnemySpawnService>(Lifetime.Scoped)
             .As<IEnemySpawnService>()
             .As<IBootableAsync>()
-            .WithParameter("enemyConfig", _enemyConfig)
             .WithParameter("enemyCount", _enemyCount);
 
         builder.Register<RuntimeCharacterService>(Lifetime.Scoped)
@@ -88,30 +93,24 @@ public class GameServicesInstaller : ScriptableInstaller
 
     }
 
-    private EnemyView GetRandomView()
+    private EnemyComposeData GetRandomView()
     {
-        return _enemyViews[Random.Range(0, _enemyViews.Count)];
+        return _enemyComposeDatas[Random.Range(0, _enemyComposeDatas.Count)];
     }
 }
 
-
-
-
-
-
-
-public interface ISpell
+[System.Serializable]
+public class EnemyComposeData
 {
-    int Damage { get; }
-    int Range { get; }
+    public EnemyConfig EnemyConfig;
+    public EnemyView EnemyView;
 
-    int Speed { get; }
 }
 
-public interface ICharacter
-{
-    void GetDamage(float damage);
-}
+
+
+
+
 
 
 

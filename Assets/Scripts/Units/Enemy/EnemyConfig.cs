@@ -8,4 +8,5 @@ public class EnemyConfig : ScriptableObject
     [SerializeField] public int Damage;
     [SerializeField] public float Protection;
     [SerializeField] public float AttackDelay;
+    [SerializeField] public float Speed;
 }

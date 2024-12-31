@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2e9bcd5f4a4537498f53247bae6b517, type: 3}
-  m_Name: EnemyConfig
+  m_Name: EnemyConfig 1
   m_EditorClassIdentifier: 
-  Hp: 10
-  Damage: 10
+  Hp: 5
+  Damage: 5
   Protection: 0.5
   AttackDelay: 0.5
-  Speed: 3.5
+  Speed: 5

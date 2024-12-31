@@ -43,3 +43,4 @@ MonoBehaviour:
   - Scope: 2
     Installers:
     - {fileID: 11400000, guid: 6e40b4e45595ae24abbf0e37d4b2de7b, type: 2}
+  _camera: {fileID: 1812509478501588934, guid: 997486cac6b33cd469e8f59672f29169, type: 3}
