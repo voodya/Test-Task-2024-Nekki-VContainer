@@ -12,6 +12,7 @@ public class BootstrapServicesInstaller : ScriptableInstaller
     [SerializeField] private AssetReference _configurePlayerScene;
     [SerializeField] private AssetReference _gameUiScene;
     [SerializeField] private List<ScopeInstallersList> _rawInstallers;
+    [SerializeField] private Camera _camera;
     public override void Install(IContainerBuilder builder)
     {
         builder.Register<LoadingPanelService>(Lifetime.Singleton)
@@ -21,6 +22,11 @@ public class BootstrapServicesInstaller : ScriptableInstaller
         builder.Register<SaveService>(Lifetime.Singleton)
             .As<ISaveService>()
             .As<IBootableAsync>();
+
+        builder.Register<CameraService>(Lifetime.Singleton)
+            .As<ICameraService>()
+            .As<IBootableAsync>()
+            .WithParameter("camera", _camera);
 
         RegisterScenes(builder);
         RegisterStateMachine(builder);

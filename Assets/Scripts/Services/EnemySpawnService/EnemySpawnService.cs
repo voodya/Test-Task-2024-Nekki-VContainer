@@ -17,6 +17,7 @@ public class EnemySpawnService : IEnemySpawnService
     private readonly Func<EnemyConfig, EnemyPresenter> _factory;
     private Queue<EnemyPresenter> _presenters;
     private IMapGeneratorService _mapGeneratorService;
+    private ICameraService _cameraService;
     
     private EnemyConfig _config;
     private int _maxEnemyCount = 10;
@@ -28,13 +29,15 @@ public class EnemySpawnService : IEnemySpawnService
         Func<EnemyConfig, EnemyPresenter> func,
         EnemyConfig enemyConfig,
         int enemyCount,
-        IMapGeneratorService mapGeneratorService)
+        IMapGeneratorService mapGeneratorService,
+        ICameraService cameraService)
     {
         _config = enemyConfig;
         _factory = func;
         Priority = 1;
         _maxEnemyCount = enemyCount;
         _mapGeneratorService = mapGeneratorService;
+        _cameraService = cameraService;
     }
 
     public bool IsBooted { get; set; }
@@ -87,8 +90,24 @@ public class EnemySpawnService : IEnemySpawnService
         }
     }
 
+
     private Vector3 GetOutRectPosition()
     {
-        return _mapGeneratorService.GetRandomPositin();
+        Vector3 pose = _mapGeneratorService.GetRandomPositin();
+        Vector3[] poses = new Vector3[] { pose };
+        var palnes = GeometryUtility.CalculateFrustumPlanes(_cameraService.CurrentCamera);
+        var bounds = GeometryUtility.CalculateBounds(poses, Matrix4x4.identity);
+        if (GeometryUtility.TestPlanesAABB(palnes, bounds))
+        {
+            Debug.LogError("We in bounds");
+            
+            return GetOutRectPosition();
+        }
+        else
+        {
+            Debug.LogError("We out bounds");
+            return pose;
+        }
+        // too large, need optimize 
     }
 }

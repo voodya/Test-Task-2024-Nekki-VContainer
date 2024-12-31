@@ -9,9 +9,9 @@ public class GroundView : MonoBehaviour, IDisposable
     [SerializeField] private Transform _rectStart;
     [SerializeField] private Transform _rectEnd;
 
+
+
     public Vector4 GroundBounds => GetBounds();
-
-
 
     public NavMeshSurface NavMeshSurface => _navMeshSurface;
     public Vector3 StartPose => _playerSpawnPoint.localPosition;
@@ -22,6 +22,8 @@ public class GroundView : MonoBehaviour, IDisposable
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(GetCenterPoint(_rectStart.position, _rectEnd.position), GetSize(_rectStart.position, _rectEnd.position));
     }
+
+
 
     private Vector3 GetCenterPoint(Vector3 start, Vector3 end)
     {
