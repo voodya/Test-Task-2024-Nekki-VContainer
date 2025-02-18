@@ -14,7 +14,7 @@ public class GameLoopService : IGameLoopService
     private IEnemySpawnService _enemySpawnService;
     private IMapGeneratorService _mapGeneratorService;
     private IRuntimeCharacterService _runtimeCharacterService;
-    private IRbMovementService _rbMovementService;
+    private IMovementService _rbMovementService;
     private ISpellHolderService _spellHolderService;
     private IGameUIService _gameUIService;
     private CompositeDisposable _compositeDisposable;
@@ -25,7 +25,7 @@ public class GameLoopService : IGameLoopService
         IEnemySpawnService enemySpawnService,
         IMapGeneratorService mapGeneratorService,
         IRuntimeCharacterService runtimeCharacterService,
-        IRbMovementService rbMovementService,
+        IMovementService rbMovementService,
         ISpellHolderService spellHolderService,
         IGameUIService gameUIService,
         IApplicationScopesService applicationScopesService)

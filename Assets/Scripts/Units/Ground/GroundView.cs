@@ -9,8 +9,6 @@ public class GroundView : MonoBehaviour, IDisposable
     [SerializeField] private Transform _rectStart;
     [SerializeField] private Transform _rectEnd;
 
-
-
     public Vector4 GroundBounds => GetBounds();
 
     public NavMeshSurface NavMeshSurface => _navMeshSurface;

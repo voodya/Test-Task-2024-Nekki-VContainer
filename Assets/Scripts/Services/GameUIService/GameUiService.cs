@@ -17,7 +17,7 @@ public class GameUiService : IGameUIService
     private ISceneManager _sceneManager;
     private ISpellHolderService _spellHolderService;
     private IRuntimeCharacterService _runtimeCharacterService;
-    private Dictionary<string, SpellConfig> _configs;
+    private Dictionary<string, ComplexSpellConfig> _configs;
     private IApplicationScopesService _applicationScopesService;
 
     [Inject]
@@ -25,7 +25,7 @@ public class GameUiService : IGameUIService
         ISceneManager sceneManager,
         ISpellHolderService spellHolderService,
         IRuntimeCharacterService runtimeCharacterService,
-        Dictionary<string, SpellConfig> configs,
+        Dictionary<string, ComplexSpellConfig> configs,
         IApplicationScopesService applicationScopesService)
     {
         _configs = configs;

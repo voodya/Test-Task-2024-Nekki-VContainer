@@ -13,6 +13,7 @@ public class BootstrapServicesInstaller : ScriptableInstaller
     [SerializeField] private AssetReference _gameUiScene;
     [SerializeField] private List<ScopeInstallersList> _rawInstallers;
     [SerializeField] private Camera _camera;
+    [SerializeField] private GizmosHelper _gizmosHelper;
     public override void Install(IContainerBuilder builder)
     {
         builder.Register<LoadingPanelService>(Lifetime.Singleton)
@@ -27,6 +28,9 @@ public class BootstrapServicesInstaller : ScriptableInstaller
             .As<ICameraService>()
             .As<IBootableAsync>()
             .WithParameter("camera", _camera);
+
+        builder.RegisterInstance(Instantiate(_gizmosHelper))
+            .As<IGizmosHelper>();
 
         RegisterScenes(builder);
         RegisterStateMachine(builder);

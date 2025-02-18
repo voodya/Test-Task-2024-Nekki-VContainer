@@ -18,17 +18,6 @@ public class ScopesHolderService : IScopesHolderService
         _installersContainer = installers;
     }
 
-    //public void RegisterScopeServices<T>(List<ScriptableInstaller> installers) where T : LifetimeScope
-    //{
-    //    Type serviceType = typeof(T);
-    //    if (!_installersContainer.ContainsKey(serviceType))
-    //        _installersContainer[serviceType] = installers;
-    //    else
-    //    {
-    //        Debug.LogWarning($"Already registred {serviceType}");
-    //    }
-    //}
-
     public List<ScriptableInstaller> GetServices(LocalScope scope)
     {
         if (_installersContainer.ContainsKey(scope))

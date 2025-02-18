@@ -49,7 +49,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerSpawnPoint: {fileID: 2351699838959608078}
-  _groundSize: {x: 20, y: 20}
   _navMeshSurface: {fileID: 3529357137725158310}
   _rectStart: {fileID: 8583155840940257100}
   _rectEnd: {fileID: 4367391630666767867}
@@ -559,7 +558,7 @@ GameObject:
   - component: {fileID: 3827726225537862434}
   - component: {fileID: 2454306362748206799}
   - component: {fileID: 3529357137725158310}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}

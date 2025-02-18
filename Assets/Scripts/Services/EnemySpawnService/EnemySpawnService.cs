@@ -96,13 +96,13 @@ public class EnemySpawnService : IEnemySpawnService
         var bounds = GeometryUtility.CalculateBounds(poses, Matrix4x4.identity);
         if (GeometryUtility.TestPlanesAABB(palnes, bounds))
         {
-            Debug.LogError("We in bounds");
+            //Debug.LogError("We in bounds");
             
             return GetOutRectPosition();
         }
         else
         {
-            Debug.LogError("We out bounds");
+            //Debug.LogError("We out bounds");
             return pose;
         }
         // too large, need optimize 

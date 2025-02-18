@@ -10,31 +10,29 @@ public interface ISpellHolderService: IBootableAsync, IDisposable
     IObservable<Dictionary<string, TimeSpan>> OnCooldownsUpdated { get; }
     IObservable<string> OnCurrentSpellChanget { get; }
     string CurrentSpell { get; }
-
-    void ReleaseSpell(SpellPresenter spellPresenter);
-    void SetCoolDown(SpellPresenter spellPresenter);
+    void ReleaseSpell(ABaseSpellPresenter spellPresenter);
+    void SetCoolDown(ABaseSpellPresenter spellPresenter);
     void SetIgnoreCollision(Collider collider);
     void StartSpellHolder();
-    void ThrowSpell(Vector3 startPose, Vector3 direction);
+    void ThrowSpell(CharacterPresenter character);
 }
-
 
 public class SpellHolderService : ISpellHolderService
 {
-    private Dictionary<string, Queue<SpellPresenter>> _currentSpellsPool;
+    private Dictionary<string, Queue<ABaseSpellPresenter>> _currentSpellsPool;
     private Dictionary<string, TimeSpan> _spellsCoolDowns;
     private Dictionary<string, DateTime> _lastThrow;
     private Dictionary<string, float> _coolDowns;
-    private readonly Func<SpellConfig, SpellPresenter> _factory;
+   // private readonly Func<SpellConfig, ForwardSpellPresenter> _factory;
+    private readonly Func<ComplexSpellConfig, ABaseSpellPresenter> _factory;
     private string _currentSpell;
     private int _currentSpellId;
     private int _maxSpellCount;
     private CompositeDisposable _compositeDisposable;
-    private List<SpellConfig> _spellConfigs;
+    private List<ComplexSpellConfig> _spellConfigs;
     private IPlayerInputService _playerInputService;
 
     private Subject<string> _onSpellChanget = new Subject<string>();
-
 
     private Subject<Dictionary<string, TimeSpan>> _onCoolDownsUpdated = new Subject<Dictionary<string, TimeSpan>>();
 
@@ -48,9 +46,9 @@ public class SpellHolderService : ISpellHolderService
 
     [Inject]
     public SpellHolderService(
-        List<SpellConfig> spells,
+        List<ComplexSpellConfig> spells,
         int spellPoolSize,
-        Func<SpellConfig, SpellPresenter> factory,
+        Func<ComplexSpellConfig, ABaseSpellPresenter> factory,
         IPlayerInputService playerInputService)
     {
         _maxSpellCount = spellPoolSize;
@@ -71,19 +69,18 @@ public class SpellHolderService : ISpellHolderService
         }
     }
 
-    public void SetCoolDown(SpellPresenter spellPresenter)
+    public void SetCoolDown(ABaseSpellPresenter spellPresenter)
     {
         _lastThrow[spellPresenter.SpellName] = DateTime.Now;
     }
 
-    public void ThrowSpell(Vector3 startPose, Vector3 direction)
+    public void ThrowSpell(CharacterPresenter character)
     {
         if (_spellsCoolDowns[_currentSpell].TotalMilliseconds > 0) return;
-        _currentSpellsPool[_currentSpell].Dequeue().Throw(startPose, direction);
+        _currentSpellsPool[_currentSpell].Dequeue().Throw(character);
     }
 
-
-    public void ReleaseSpell(SpellPresenter spellPresenter)
+    public void ReleaseSpell(ABaseSpellPresenter spellPresenter)
     {
         _currentSpellsPool[spellPresenter.SpellName].Enqueue(spellPresenter);
     }
@@ -101,20 +98,21 @@ public class SpellHolderService : ISpellHolderService
         _currentSpellId = 0;
         foreach (var item in _spellConfigs)
         {
-            Queue<SpellPresenter> spellsQueue = new Queue<SpellPresenter>();
-            for (var i = 0; i < _maxSpellCount; i++)
-            {
+            Queue<ABaseSpellPresenter> spellsQueue = new Queue<ABaseSpellPresenter>();
+            //for (var i = 0; i < _maxSpellCount; i++)
+            //{
                 var pres = _factory.Invoke(item);
                 _compositeDisposable.Add(pres);
                 spellsQueue.Enqueue(pres);
                 
-            }
+            //}
             _spellsCoolDowns[item.SpellName] = new TimeSpan();
             _currentSpellsPool[item.SpellName] = spellsQueue;
             _lastThrow[item.SpellName] = DateTime.Now;
-            _coolDowns[item.SpellName] = item.CoolDown;
+            _coolDowns[item.SpellName] = item.Piece.CoolDown;
             await UniTask.Yield();
         }
+        Debug.LogError(_coolDowns.Count);
     }
 
     public void StartSpellHolder()
@@ -123,6 +121,7 @@ public class SpellHolderService : ISpellHolderService
             .EveryFixedUpdate()
             .Subscribe(UpdateCooldowns)
             .AddTo(_compositeDisposable);
+
         _playerInputService.OnInputNext.Subscribe(_ => 
         {
             if (_currentSpellId == _spellConfigs.Count - 1)
@@ -132,6 +131,7 @@ public class SpellHolderService : ISpellHolderService
             _currentSpell = _spellConfigs[_currentSpellId].SpellName;
             _onSpellChanget.OnNext(_currentSpell);
         }).AddTo(_compositeDisposable);
+
         _playerInputService.OnInputPrevious.Subscribe(_ =>
         {
             if (_currentSpellId == 0)

@@ -25,13 +25,17 @@ MonoBehaviour:
   _groundView: {fileID: 842157766685083832, guid: 6c880cf2c80b1dc40afaee095f1e3aff, type: 3}
   _characterView: {fileID: 3656580108186799370, guid: 6ab7f90ec37928e47a5fe02d8d85011d, type: 3}
   _enemyCount: 10
-  _spellsPoolSize: 2
+  _spellsPoolSize: 3
   _spells:
-  - {fileID: 11400000, guid: 9558c150651498a418ab50ef550e250a, type: 2}
-  - {fileID: 11400000, guid: 97c50497f5256cf42a77a890428e7027, type: 2}
+  - {fileID: 11400000, guid: 4c04a651767f1f0488c4960a40dc4186, type: 2}
+  - {fileID: 11400000, guid: b3fa032b489d7e3498e3360e402229d3, type: 2}
+  - {fileID: 11400000, guid: f182d669132220f40900756c5fc39ed3, type: 2}
   _spellMask:
     serializedVersion: 2
     m_Bits: 64
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 128
   _enemyComposeDatas:
   - EnemyConfig: {fileID: 11400000, guid: 763c232857b751d4b86e83185cd0c7bc, type: 2}
     EnemyView: {fileID: 3286952858738354405, guid: 0d67c352c379c3f42899c381a2f9010f, type: 3}

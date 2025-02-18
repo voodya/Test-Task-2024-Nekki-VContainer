@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -14,6 +16,7 @@ public abstract class ABaseState<T> : IABaseState where T : ABaseEntryPoint
     protected ISceneManager _sceneManager;
     protected readonly LifetimeScope _currentScope;
     protected IScopesHolderService _scopesHolderService;
+    protected IEnumerable<IDisposable> _disposed;
 
     protected LifetimeScope NewScope;
 
@@ -37,10 +40,16 @@ public abstract class ABaseState<T> : IABaseState where T : ABaseEntryPoint
             builder.RegisterEntryPoint<T>();
             builder.RegisterBuildCallback(c => Debug.LogError($"{scope} scope created"));
         });
+        _disposed = NewScope.Container.Resolve<IEnumerable<IDisposable>>();
     }
     public virtual void Exit()
     {
         NewScope.Dispose();
+        foreach (var scope in _disposed)
+        {
+            scope.Dispose();
+        }
+
         _sceneManager.ReleaseAllScenes();
     }
 }

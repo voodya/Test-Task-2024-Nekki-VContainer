@@ -2,8 +2,10 @@ public class SpellModel
 {
     private float _speed;
     private float _range;
+    private float _castRange;
     private float _liveTime;
     private int _damage;
+    private int _maxPieceCount;
     private string _name;
     private float _coolDown;
 
@@ -13,14 +15,18 @@ public class SpellModel
     public float LiveTime => _liveTime;
     public string Name => _name;
     public float CoolDown => _coolDown;
+    public float CastRange => _castRange;
+    public int MaxPieceCount => _maxPieceCount;
 
-    public SpellModel(SpellConfig config)
+    public SpellModel(PiecesSpellConfig config, string name)
     {
         _speed = config.Speed;
         _range = config.Range;
         _liveTime = config.LiveTime;
         _damage = config.Damage;
-        _name = config.SpellName;
+        _name = name;
         _coolDown = config.CoolDown;
+        _castRange = config.CastRange;
+        _maxPieceCount = config.MaxPieceCount;
     }
 }

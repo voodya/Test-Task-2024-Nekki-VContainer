@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
@@ -13,12 +14,13 @@ public class GameServicesInstaller : ScriptableInstaller
     [SerializeField] private CharacterView _characterView;
     [SerializeField] private int _enemyCount;
     [SerializeField] private int _spellsPoolSize;
-    [SerializeField] private List<SpellConfig> _spells;
+    [SerializeField] private List<ComplexSpellConfig> _spells;
     [SerializeField] private LayerMask _spellMask;
+    [SerializeField] private LayerMask _groundMask;
     [SerializeField] private List<EnemyComposeData> _enemyComposeDatas;
 
     private Dictionary<string, SpellView> _optimizetSpellViews;
-    private Dictionary<string, SpellConfig> _optimizetSpellConfigs;
+    private Dictionary<string, ComplexSpellConfig> _optimizetSpellConfigs;
 
 
 
@@ -29,7 +31,7 @@ public class GameServicesInstaller : ScriptableInstaller
         {
             _optimizetSpellViews[view.SpellViewName] = view;
         }
-        _optimizetSpellConfigs = new Dictionary<string, SpellConfig>();
+        _optimizetSpellConfigs = new Dictionary<string, ComplexSpellConfig>();
         foreach (var view in _spells)
         {
             _optimizetSpellConfigs[view.SpellName] = view;
@@ -48,10 +50,8 @@ public class GameServicesInstaller : ScriptableInstaller
             x =>
             save => new CharacterPresenter(Instantiate(_characterView), new CharacterModel(save), x)
             , Lifetime.Scoped);
-        builder.RegisterFactory<SpellConfig, SpellPresenter>(
-            x =>
-            spellConfig => new SpellPresenter(Instantiate(_optimizetSpellViews[spellConfig.SpellName]), new SpellModel(spellConfig), x, _spellMask)
-            , Lifetime.Scoped);
+
+        RegisterSpellFactorys(builder);
 
         builder.Register<MapGeneratorService>(Lifetime.Scoped)
             .As<IMapGeneratorService>()
@@ -61,6 +61,7 @@ public class GameServicesInstaller : ScriptableInstaller
 
         builder.Register<EnemySpawnService>(Lifetime.Scoped)
             .As<IEnemySpawnService>()
+            .As<IDisposable>()
             .As<IBootableAsync>()
             .WithParameter("enemyCount", _enemyCount);
 
@@ -73,7 +74,8 @@ public class GameServicesInstaller : ScriptableInstaller
             .As<IBootableAsync>();
         
         builder.Register<RbMovementService>(Lifetime.Scoped)
-            .As<IRbMovementService>()
+            .As<IMovementService>()
+             .WithParameter("layerMask", _groundMask)
             .As<IBootableAsync>();
 
         builder.Register<PlayerInputService>(Lifetime.Scoped)
@@ -93,11 +95,58 @@ public class GameServicesInstaller : ScriptableInstaller
 
     }
 
+    private void RegisterSpellFactorys(IContainerBuilder builder)
+    {
+        builder.RegisterFactory<ComplexSpellConfig, ABaseSpellPresenter>(resolver => data => {
+            return GetPresenter(data, resolver);
+        }, Lifetime.Scoped);
+    }
+
+    private ABaseSpellPresenter GetPresenter(ComplexSpellConfig data, IObjectResolver resolver)
+    {
+        try
+        {
+            switch (data.SpellType)
+            {
+                case ESpellType.MultiTarget:
+                    return new MultiTargetSpellPresenter(GetSpellsViews(_optimizetSpellViews[data.Piece.SpellName], data.Piece.MaxPieceCount), new SpellModel(data.Piece, data.SpellName), resolver, _spellMask);
+                case ESpellType.Forward:
+                    return new ForwardSpellPresenter(GetSpellsViews(_optimizetSpellViews[data.Piece.SpellName], 1), new SpellModel(data.Piece, data.SpellName), resolver, _spellMask);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Wrong create SpellPresenter" + ex);
+            return null;
+        }
+        
+    }
+
+    public List<ISpellView> GetSpellsViews(SpellView pfb, int count)
+    {
+        List<ISpellView> spells = new(count);
+        for (int i = 0; i < count; i++)
+        {
+            spells.Add(Instantiate(pfb));
+        }
+
+        return spells;
+    }
+
     private EnemyComposeData GetRandomView()
     {
-        return _enemyComposeDatas[Random.Range(0, _enemyComposeDatas.Count)];
+        return _enemyComposeDatas[UnityEngine.Random.Range(0, _enemyComposeDatas.Count)];
     }
 }
+
+public enum ESpellType
+{
+    Forward,
+    MultiTarget
+}
+
 
 [System.Serializable]
 public class EnemyComposeData

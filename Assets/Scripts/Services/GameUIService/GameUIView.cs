@@ -13,7 +13,7 @@ public class GameUIView : ABaseScene
 
     public IObservable<Unit> OnReturn => _returnBtn.OnClickAsObservable();
 
-    public void SetSpell(SpellConfig spellConfig)
+    public void SetSpell(ComplexSpellConfig spellConfig)
     {
         _spellImage.texture = spellConfig.Icon;
     }

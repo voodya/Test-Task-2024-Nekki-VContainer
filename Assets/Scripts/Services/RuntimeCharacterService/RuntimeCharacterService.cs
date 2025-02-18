@@ -76,7 +76,7 @@ public class RuntimeCharacterService : IRuntimeCharacterService
         _spellHolderService.SetIgnoreCollision(_currentCharacter.Collider);
         _playerInputService.OnInputAttack.Subscribe(_ => 
         {
-            _spellHolderService.ThrowSpell(_currentCharacter.AttackPose, _currentCharacter.Rigidbody.transform.forward);
+            _spellHolderService.ThrowSpell(_currentCharacter);
         
         }).AddTo(_disposable);
     }

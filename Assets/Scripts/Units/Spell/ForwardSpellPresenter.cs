@@ -1,33 +1,19 @@
 using System;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using VContainer;
 
-public class SpellPresenter: IDisposable
+public class ForwardSpellPresenter: ABaseSpellPresenter
 {
-    private ISpellView _view;
-    private SpellModel _model;
-    private CompositeDisposable _disposable;
-    private LayerMask _mask;
-    private ISpellHolderService _service;
-
-    public string SpellName => _model.Name;
-    public float CoolDown => _model.CoolDown;
-
-    public Collider Collider => _view.Collider;
-
-    public SpellPresenter(ISpellView spellView, SpellModel spellModel, IObjectResolver objectResolver, LayerMask layerMask)
+    public ForwardSpellPresenter(List<ISpellView> views, SpellModel model, IObjectResolver objectResolver, LayerMask mask) : base(views, model, objectResolver, mask)
     {
-        _mask = layerMask;
-        _view = spellView;
-        _view.Hide();
-        _model = spellModel;
-        _service = objectResolver.Resolve<ISpellHolderService>();
     }
 
-
-    public void Throw(Vector3 pose, Vector3 direction)
+    public override void Throw(CharacterPresenter character)
     {
+        Vector3 pose = character.AttackPose;
+        Vector3 direction = character.CharacterTransform.forward;
         _disposable = new CompositeDisposable();
         _view.Throw();
         _service.SetCoolDown(this);
@@ -63,11 +49,5 @@ public class SpellPresenter: IDisposable
         _view.Land();
         _disposable?.Dispose();
         _service.ReleaseSpell(this);
-    }
-
-    public void Dispose()
-    {
-        MonoBehaviour.Destroy(_view.GameObject);
-        _disposable?.Dispose();
     }
 }

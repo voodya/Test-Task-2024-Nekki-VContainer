@@ -11,6 +11,7 @@ public interface IPlayerInputService : IBootableAsync, IDisposable
     IObservable<Unit> OnInputNext { get; }
     IObservable<Unit> OnInputAttack { get; }
     IObservable<Vector2> OnInputMove { get; }
+    IObservable<Vector2> OnMouseMove { get; }
 }
 
 
@@ -21,6 +22,7 @@ public class PlayerInputService : IPlayerInputService
     private Subject<Unit> _onAttack = new Subject<Unit>();
     private Subject<Unit> _onNext = new Subject<Unit>();
     private Subject<Unit> _onPrevious = new Subject<Unit>();
+    private Subject<Vector2> _onMouseMove = new Subject<Vector2>();
     private CompositeDisposable _disposable;
     private Vector2 _moveActionData;
     private InputAction _moveAction;
@@ -35,19 +37,25 @@ public class PlayerInputService : IPlayerInputService
     public IObservable<Unit> OnInputAttack => _onAttack;
     public IObservable<Unit> OnInputNext => _onNext;
     public IObservable<Unit> OnInputPrevious => _onPrevious;
+    public IObservable<Vector2> OnMouseMove => _onMouseMove;
 
     public bool IsBooted { get; set; }
     public int Priority { get; set; }
+
+    private InputAction _mouseAction;
+
 
     public async UniTask Boot()
     {
         if (IsBooted) return;
         IsBooted = true;
-        _disposable = new CompositeDisposable(); 
+        _disposable = new CompositeDisposable();
 
+        _mouseAction = InputSystem.actions.FindAction("MousePosition");
+        
         _moveAction = InputSystem.actions.FindAction("Move");
 
-        if(_moveAction != null)
+        if (_moveAction != null)
         {
             Observable
                 .EveryUpdate()
@@ -57,7 +65,11 @@ public class PlayerInputService : IPlayerInputService
             _moveAction.canceled += SetStay;
         }
 
-        
+        if (_mouseAction != null)
+        { 
+            _mouseAction.performed += OnMouseMoved;
+        }
+
 
 
 
@@ -66,6 +78,11 @@ public class PlayerInputService : IPlayerInputService
         InputSystem.actions.FindAction("Previous").performed += OnPrevious;
 
         await UniTask.Yield();
+    }
+
+    private void OnMouseMoved(InputAction.CallbackContext context)
+    {
+        _onMouseMove?.OnNext(context.ReadValue<Vector2>());
     }
 
     private void SetStay(InputAction.CallbackContext context)
@@ -82,6 +99,7 @@ public class PlayerInputService : IPlayerInputService
     {
         _moveAction.performed -= SetMove;
         _moveAction.canceled -= SetStay;
+        _mouseAction.performed -= OnMouseMoved;
         InputSystem.actions.FindAction("Attack").performed -= OnAttack;
         InputSystem.actions.FindAction("Next").performed -= OnNext;
         InputSystem.actions.FindAction("Previous").performed -= OnPrevious;

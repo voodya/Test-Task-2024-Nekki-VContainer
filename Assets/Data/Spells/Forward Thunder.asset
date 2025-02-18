@@ -9,15 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a0f329f9f425404cb4c2db4ae0faa6c, type: 3}
-  m_Name: Thunder
+  m_Script: {fileID: 11500000, guid: 65e05cb4848a2c443ba352ed344f6e3e, type: 3}
+  m_Name: Forward Thunder
   m_EditorClassIdentifier: 
-  SpellName: Thunder
-  Damage: 10
-  MaxPieceCount: 5
-  Speed: 1000
-  Range: 3
-  LiveTime: 2
-  CoolDown: 4
-  CastRange: 15
+  Piece: {fileID: 11400000, guid: 97c50497f5256cf42a77a890428e7027, type: 2}
+  SpellType: 0
+  SpellName: Forward Thunder
+  MaxPieces: 0
   Icon: {fileID: 2800000, guid: 418d7dba68bcca345831e17e8894f93b, type: 3}
