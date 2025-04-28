@@ -10,5 +10,10 @@
 BootstrapInstaller.cs -> BootstrapEntryPoint.cs.
 Регистрация контейнеров происходит в наследуемых от ScriptableInstaller.cs скриптах (SO) для каждого скоупа
 
+# Управление
+Q, W - предыдущий/следующий скилл
+X - использовать скилл
+Arrows - передвижение
+
 https://github.com/user-attachments/assets/ec63f36e-e76c-4278-9a18-fe97cb57afed
 
